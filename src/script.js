@@ -2,6 +2,7 @@ import { data } from "./data.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
+  const suggestionsContainer = document.getElementById("suggestions-container"); //!
   const searchButton = document.getElementById("searchButton");
   const dateAndTime = document.getElementById("dateAndTime");
   const API_KEY = "48b780821f98aaec00763ade9ec87d3e";
@@ -32,6 +33,51 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("form").addEventListener("submit", (e) => {
     e.preventDefault();
     document.getElementById("form").reset();
+  });
+
+  function autocomplete(input){
+    const inputValue=input.value.toLowerCase();
+    
+    if (!inputValue || inputValue.length < 1) {
+      suggestionsContainer.innerHTML = '';
+      return;
+    }
+    
+    const suggestions = data.filter(city => city.city.toLowerCase().startsWith(inputValue));
+
+    suggestionsContainer.innerHTML = "";
+    
+    const autocompleteList = document.createElement("div");
+    autocompleteList.className="mt-8 bg-white rounded-md shadow-lg max-h-48 overflow-y-auto";
+    autocompleteList.id = "autocomplete-list";
+    suggestionsContainer.appendChild(autocompleteList);
+
+    suggestions.forEach(suggestion => {
+      const suggestionsDiv=document.createElement("div");
+      suggestionsDiv.textContent= suggestion.city;
+      suggestionsDiv.className = "p-2 hover:bg-gray-200 cursor-pointer";
+
+      suggestionsDiv.addEventListener("click", () => {
+        searchInput.value=suggestion.city;
+        autocompleteList.innerHTML="";
+      });
+      autocompleteList.appendChild(suggestionsDiv);
+    });
+    document.addEventListener('click', function(e) {
+      if (!autocompleteList.contains(e.target) && e.target !== searchInput) {
+        autocompleteList.innerHTML = '';  
+      }
+    });
+
+    if (suggestions.length === 0) {
+      const noResultDiv = document.createElement('div');
+      noResultDiv.textContent = "No matches found.";
+      noResultDiv.className = "p-2 text-gray-500";
+      autocompleteList.appendChild(noResultDiv); 
+    }
+  }
+  searchInput.addEventListener('input', function() {
+    autocomplete(this);
   });
 
   searchButton.addEventListener("click", () => {
@@ -74,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("sehir bulunamadi");
     }
   });
-
+  
   function createCard(item) {
     const bottomCardsContainer = document.querySelector(".cards-highlights");
     bottomCardsContainer.innerHTML = "";

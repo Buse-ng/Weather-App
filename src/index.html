@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Weather App">
     <title>Weather App</title>
 
     <!-- tailwindcss cdn -->
@@ -47,7 +48,9 @@
                         <input 
                             type="search" name="" 
                             id="searchInput" class="w-full rounded-xl px-2"
-                            placeholder="search for places" />
+                            placeholder="search for places" 
+                        />
+                        <div id="suggestions-container" class="absolute w-1/2 z-10"></div>
                         <button 
                             type="submit" id="searchButton" 
                             class="w-24 h-10 bg-gray-200 rounded-lg md:w-12 md:h-8"
