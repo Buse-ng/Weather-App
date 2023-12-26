@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchButton = document.getElementById("searchButton");
   const dateAndTime = document.getElementById("dateAndTime");
   const API_KEY = "48b780821f98aaec00763ade9ec87d3e";
+  const highlightsTitle=document.querySelector('.highlights-title');
   let global_DATA;
   
   function getFormattedDate(date) {
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     suggestionsContainer.innerHTML = "";
     
     const autocompleteList = document.createElement("div");
-    autocompleteList.className="mt-8 bg-white rounded-md shadow-lg max-h-48 overflow-y-auto";
+    autocompleteList.className="mt-1 bg-white rounded-md shadow-lg max-h-48 overflow-y-auto";
     autocompleteList.id = "autocomplete-list";
     suggestionsContainer.appendChild(autocompleteList);
 
@@ -108,12 +109,10 @@ document.addEventListener("DOMContentLoaded", () => {
           degree.innerHTML = KelvinToCelcius(data.list[0].main.temp).toFixed(0);
           weatherDescription.innerHTML =
             data.list[0].weather[0].description.toUpperCase();
-          document.getElementById(
-            "humidity"
-          ).innerHTML = `Humidity: ${data.list[0].main.humidity}%`;
-          document.getElementById(
-            "windSpeed"
-          ).innerHTML = `Wind: ${data.list[0].wind.speed}km/s`;
+          document.getElementById("feelsLike").innerHTML = 
+            `Feels Like: ${KelvinToCelcius(data.list[0].main.feels_like).toFixed(0)}`;
+          document.getElementById("windSpeed").innerHTML = 
+            `Wind: ${data.list[0].wind.speed}km/s`;
           // darkLightMode();
         });
     } else {
@@ -121,21 +120,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   
+
+  // Highlights cards
   function createCard(item) {
     const bottomCardsContainer = document.querySelector(".cards-highlights");
     bottomCardsContainer.innerHTML = "";
     
     const weatherData = {
-      feels_like: `${KelvinToCelcius(item.main.feels_like).toFixed(0)} C`,
+      // feels_like: `${KelvinToCelcius(item.main.feels_like).toFixed(0)} C`,
       humidity: item.main.humidity + "%",
       wind_speed: item.wind.speed.toFixed(2) + "km/s",
       visibility: item.visibility + "m",
+      pop: item.pop, //probability of precipitation
+      // clouds: item.clouds.all, // clouds %:  all:1 100%, all:0 0% 
+      sunrise: item.sunrise,
+      sunset: item.sunset,
+      snow: item.snow, // 3h: snow amount in the last 3 hours
+      rain: item.rain, // 3h: rain amount in the last 3 hours
     };
 
     const highlightKeys = Object.keys(weatherData);
     highlightKeys.forEach((key) => {
       const cardDiv = document.createElement("div");
-      cardDiv.className = "w-1/2 p-4 bg-white rounded-lg shadow-md";
+      cardDiv.className = "p-4 bg-white rounded-lg shadow-md"; //w-1/2
       
       const title = document.createElement("h2");
       title.textContent = key.charAt(0).toUpperCase() + key.slice(1).replace("_", " ");
@@ -156,14 +163,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.getElementById("todayBtn").addEventListener("click", ()=>{
+      highlightsTitle.innerHTML = `Today's Highlights`;
+      
       const listDtTxt = global_DATA.list[0].dt_txt.split(" ");
       const dayPart = listDtTxt[0]; // list date day part 2023-12-20
       const timePart = listDtTxt[1]; // list date time part 15:00:00
       console.log(timePart);
       const topCardsContainer = document.querySelector(".top-cards-container");
       topCardsContainer.innerHTML = '';
-      // const bottomCardsContainer = document.querySelector(".cards-highlights");
-      
+
       for (let item of global_DATA.list) {
         if (dayPart === item.dt_txt.split(" ")[0]) {
           console.log("Eşleşen bir tarih bulundu:", item.dt_txt);
@@ -194,9 +202,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("weekBtn").addEventListener("click", ()=>{
+      highlightsTitle.innerHTML="";
       const topCardsContainer = document.querySelector(".top-cards-container");
       topCardsContainer.innerHTML = ''; 
-      // const bottomCardsContainer = document.querySelector(".cards-highlights");
     
       const uniqueDates = new Set();
     
@@ -224,6 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
           //For clicked card information
           card.addEventListener("click", function () {
             createCard(item);
+            highlightsTitle.innerHTML = `${dayName}'s Highlights`;
           });
     
           card.appendChild(dayTitle);
