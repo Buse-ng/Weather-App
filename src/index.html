@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Weather App">
     <title>Weather App</title>
-
+    <!-- <link rel="stylesheet" href="style.css"> -->
     <!-- tailwindcss cdn -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 
@@ -14,93 +14,88 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
-<body>
-    <div>
-
-        <!--navbar starts-->
-        <nav>
-            <div 
-                id="navbar" 
-                class="flex items-center justify-between px-6 text-center bg-blue-300 w-full h-16 fixed top-0"
-            >    
-                <div class="inline-flex gap-x-2 items-center">
+<body class="bg-gray-400">
+        <!--header starts-->
+        <header class="bg-gray-800 w-full h-16 fixed top-0">
+            <div
+                class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 h-full"
+            >       
+                <!-- Left Side: logo -->
+                <div class="flex items-center my-2 md:my-0">
                     <img 
                         src="img/weather-news.png" 
                         alt="logo" 
-                        class="w-10 h-10" 
+                        class="w-10 h-10 mr-2" 
                     />
-                    <h2 class="text-xl font-bold">wApp</h2>
+                    <h2 class="text-xl lg:text-2xl font-bold text-gray-200">wApp</h2>
                 </div>
-            </div>
-        </nav>
-        <!-- navbar ends -->
 
-
-        <div class="contentDiv grid grid-cols-12 font-bold gap-x-4 mt-8 pl-12">
-            <!--? LEFT SIDE -->
-            <div class="col-span-4">
-                <!--? search input form-->
+                <!-- Right Side: search form -->
                 <form 
-                    action="" id="form" 
-                    class="flex items-center mt-20 justify-start"
+                    action="" 
+                    id="form" 
+                    class="flex items-center justify-start  w-full md:w-auto"
                 >
-                    <div class="w-full px-6 py-3 bg-gray-100 rounded-xl flex gap-x-8 md:gap-x-4 md:py-1.5 md:px-2">
+                    <div class="w-full md:w-auto bg-gray-600 px-6 py-3 rounded-xl flex gap-x-8 md:gap-x-4 md:py-1.5 md:px-2">
                         <input 
-                            type="search" name="" 
-                            id="searchInput" class="w-full rounded-xl px-2"
+                            type="search" 
+                            name="" 
+                            id="searchInput" 
+                            class="w-full rounded-xl px-2"
                             placeholder="search for places" 
                         />
                         <div id="suggestions-container" class="absolute w-1/2 z-10"></div>
                         <button 
-                            type="submit" id="searchButton" 
+                            type="submit" 
+                            id="searchButton" 
                             class="w-24 h-10 bg-gray-200 rounded-lg md:w-12 md:h-8"
                         >    
                             <i class="fa-solid fa-magnifying-glass cursor-pointer"></i>
                         </button>
                     </div>
                 </form>
-                <!--? form ends  -->
+            </div>
+        </header>
+        <!-- header ends -->
 
-                <!--?  Current Weather Information-->
-                <div class="current-weather-info mt-12">
-                    <img src="img/sun.png" alt="" class="w-20 h-20">
-                    <h1 class="degree-1 text-5xl py-6"></h1> <!--Degree C-F-->
-                    <p class="font-semibold" id="dateAndTime"></p> <!--date and time-->
-                    <p class="current-weather-description pt-4"></p> <!--Weather Description-->
-                    <p id="rainPersent"></p>
+        <div class="container my-16 font-bold mx-auto">
+             <!--? LEFT SIDE STARTS-->
+            <div class="mt-36 px-4 md:mt-16 md:w-1/3 md:px-4 md:bg-white min-h-screen">
+                <!-- *  Current Weather Information !!!!!!!!!!!!! pr-8 -->
+                <div class=""> <!-- mt-16-->
+                    <img src="" alt="" id="imgMain" class="w-36 h-36 mx-auto">
+                    <p class="current-weather-description text-center"></p> <!--Weather Description-->
+                    <h1 class="degree text-6xl py-6 text-center"></h1> <!--Degree C-F-->
                     <p id="feelsLike"></p> 
                     <p id="windSpeed"></p> 
                 </div>
-
-                <!--? City Name  -->
+                
+                <!--* City Name  -->
+                <p class="mt-4 font-semibold" id="dateAndTime"></p> <!--date and time-->
                 <h2 
                     id="cityName"
-                    class="mt-16 border border-4 border-gray-100 bg-gray-200 px-4 py-4 w-3/4 text-center rounded-lg"
-                > 
+                    class="mt-4 bg-gray-200 p-4 text-center rounded-lg"
+                > <!-- w-3/4-->
                 </h2>
-            </div>
-
-            <!--? RIGHT SIDE -->
-            <div class="content-right-side col-span-8 bg-gray-100 px-16">
-                <div class="mt-20 flex justify-between">
-                    <div class="">
-                        <button id="todayBtn" class="font-bold">Today</button>
-                        <button id="weekBtn" class="font-bold mx-6">Week</button>
-                    </div>
+            </div> <!--? LEFT SIDE ENDS -->
+            
+            <!--? RIGHT SIDE STARTS-->
+            <div class="mt-4 px-2">
+                <div class="buttons -mt-48 md:-mt-0">
+                    <button id="todayBtn" class="px-2 py-1 font-bold border border-1 rounded-xl bg-gray-100">Today</button>
+                    <button id="weekBtn" class="px-2 py-1 font-bold border border-1 rounded-xl bg-gray-100">Week</button>
                 </div>
-
-                <!--? Right Top Side -->
-                <div class="top-cards-container flex justify-between mt-6 gap-x-2"></div> 
+                
+                <!--* Right Top Side -->
+                <div class="top-cards-container px-2 flex flex-wrap justify-between mt-6 gap-y-4"></div> 
                 <!--top-cards: Cards for today and week buttons -->
                 
-                <!--? Right Bottom Side  -->
+                <!--* Right Bottom Side  -->
                 <h2 class="highlights-title mt-6"></h2> <!--Day's Highlights-->
                 <div class="cards-highlights flex flex-wrap mt-6 gap-y-4 gap-x-2"></div>
-            </div>
+                <!-- md:justify-between belki?? -->
+            </div><!--? RIGHT SIDE ENDS-->
         </div>
-    </div>
-
-    <script type="module" src="script.js"></script>
+        <script type="module" src="script.js"></script>
 </body>
-
 </html>
