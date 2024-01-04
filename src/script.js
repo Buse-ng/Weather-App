@@ -108,12 +108,12 @@ document.addEventListener("DOMContentLoaded", () => {
           mainImg.src=`https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`;
           const cityName = data.city.name + ", " + data.city.country;
           document.getElementById("cityName").innerHTML = cityName;
-          degree.innerHTML = KelvinToCelcius(data.list[0].main.temp).toFixed(0);
+          degree.innerHTML = `${KelvinToCelcius(data.list[0].main.temp).toFixed(0)}°C`;
           weatherDescription.innerHTML =
             data.list[0].weather[0].description.toUpperCase();
-          document.getElementById("feelsLike").innerHTML = 
-            `Feels Like: ${KelvinToCelcius(data.list[0].main.feels_like).toFixed(0)}`;
-          document.getElementById("windSpeed").innerHTML = 
+          document.querySelector(".feelsLike").innerHTML = 
+            `Feels Like: ${KelvinToCelcius(data.list[0].main.feels_like).toFixed(0)}°C`;
+          document.querySelector(".windSpeed").innerHTML = 
             `Wind Speed: ${data.list[0].wind.speed}km/s`;
           // darkLightMode();
         });
@@ -122,6 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   
+  // for sunset and sunrise
+  function getTimeConverter(unixTimestamp) {
+    const dateObject = new Date(unixTimestamp * 1000);
+    return dateObject.toLocaleTimeString().split(":").slice(0, 2).join(":");
+  }
 
   // Highlights cards
   function createCard(item) {
@@ -129,31 +134,35 @@ document.addEventListener("DOMContentLoaded", () => {
     bottomCardsContainer.innerHTML = "";
 
     const weatherData = {
+      sunrise: [`${getTimeConverter(global_DATA.city.sunrise)}`, "fa-regular fa-sun"],
+      sunset: [`${getTimeConverter(global_DATA.city.sunset)}`, "fa-solid fa-sun"],
       humidity: [`${item.main.humidity} %`, "fa-solid fa-droplet"],
       wind_speed: [`${item.wind.speed.toFixed(2)} km/s`,"fa-solid fa-wind"],
       visibility: [`${item.visibility} m`, "fa-solid fa-eye"],
-      // pop: [item.pop, "fa-solid fa-cloud-rain"],//probability of precipitation
-      clouds: [`${item.clouds.all} %`, "fa-solid fa-cloud"], // clouds %:  all:1 100%, all:0 0% 
-      // sunrise: [item.sunrise, "fa-regular fa-sun"],
-      // sunset: [item.sunset, "fa-solid fa-sun"],
-      // snow: [item.snow, "fa-solid fa-snowflake"], // 3h: snow amount in the last 3 hours
-      // rain: [item.rain, "fa-solid fa-cloud-showers-heavy"], // 3h: rain amount in the last 3 hours
+      pop: [`${item.pop} %`, "fa-solid fa-cloud-rain"],//probability of precipitation
+      clouds: [`${item.clouds.all} %`, "fa-solid fa-cloud"], 
     };
+
+    // 3h: rain-snow amount in the last 3 hours
+    if(item.snow && item.snow["3h"]){
+      weatherData.snow=[`${item.snow["3h"]} mm (3h)`, "fa-solid fa-snowflake"];
+    }
+    if(item.rain && item.rain["3h"]){
+      weatherData.rain=[`${item.rain["3h"]} mm (3h)`, "fa-solid fa-cloud-showers-heavy"];
+    }
 
     const highlightKeys = Object.keys(weatherData);
 
     highlightKeys.forEach((key) => {
       const cardDiv = document.createElement("div");
-      cardDiv.className = "p-2 md:p-6 bg-white rounded-lg shadow-md"; //w-1/2
+      cardDiv.className = "py-8 text-center bg-gray-200 rounded-lg shadow-md w-36 h-36 overflow-auto";
       
       const title = document.createElement("h2");
-      // title.className="flex flex-wrap";
       title.textContent = key.charAt(0).toUpperCase() + key.slice(1).replace("_", " ");
       
       const icon = document.createElement("i");
       icon.className = weatherData[key][1];
-      // icon.className = "w-12 h-12";
-      
+
       const valueData = document.createElement("p");
       valueData.textContent = weatherData[key][0];
 
@@ -171,8 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const listDtTxt = global_DATA.list[0].dt_txt.split(" ");
       const dayPart = listDtTxt[0]; // list date day part 2023-12-20
-      // const timePart = listDtTxt[1]; // list date time part 15:00:00
-      // console.log(timePart);
+
       const topCardsContainer = document.querySelector(".top-cards-container");
       topCardsContainer.innerHTML = '';
 
@@ -181,15 +189,14 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log("Eşleşen bir tarih bulundu:", item.dt_txt);
     
           const card = document.createElement("div");
-          card.className = "border border-2 py-4 px-8 md:p-6 bg-white rounded-xl";
+          card.className = "border border-2 py-2 px-4 bg-gray-300 rounded-xl";
     
           const timeHeader = document.createElement("h5");
           timeHeader.textContent = (item.dt_txt.split(" ")[1]).split(":").slice(0, 2).join(":");
     
           const img = document.createElement("img");
           img.src =`https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
-          //@2x olma sebebi 2 kat daha yuksek cozunurluk sunması icin.
-          // console.log(img);
+          //@2x is to provide twice the resolution.
 
           const tempParagraph = document.createElement("p");
           tempParagraph.textContent = `${KelvinToCelcius(item.main.temp).toFixed(0)}°C`;
@@ -222,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
           uniqueDates.add(listDtTxt); 
     
           const card = document.createElement("div");
-          card.className = "border border-2 py-4 px-8 md:p-6 bg-white rounded-xl";
+          card.className = "border border-2 py-2 px-4 bg-gray-300 rounded-xl";
           
           const dayTitle = document.createElement('h5');
           const [year, month, day] = listDtTxt.split("-");
