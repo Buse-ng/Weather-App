@@ -1,11 +1,13 @@
+// require('dotenv').config();
 import { data } from "./data.js";
+import { API_KEY } from "./env.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   const suggestionsContainer = document.getElementById("suggestions-container"); //!
   const searchButton = document.getElementById("searchButton");
   const dateAndTime = document.getElementById("dateAndTime");
-  const API_KEY = "";
+  // const API_KEY =
   const highlightsTitle=document.querySelector('.highlights-title');
   let global_DATA;
   
